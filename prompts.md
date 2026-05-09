@@ -183,3 +183,86 @@ field  → [data-test="password"]
 
   OUTPUT: no placeholders, no TODOs, no inline comments explaining what the code does. Each file must
 compile and run against the live site without modification.
+
+  Prompt 2 — Incremental: Item Detail Tests
+
+  Act as Senior SDET. Extend an existing TypeScript + Playwright framework
+  for https://www.saucedemo.com/.
+
+  ---
+  GOLDEN FILE CONSTRAINT for page object to look for: src/pages/LoginPage.ts
+  The following files already exist and must NOT be regenerated or modified
+  unless a BaseTest.ts fixture update is required:
+    playwright.config.ts, globalSetup.ts, tsconfig.json, package.json,
+    .env.example, README.md,
+    src/pages/BasePage.ts, src/pages/LoginPage.ts,
+    src/components/SiteHeader.ts,
+    src/data/users.ts,
+    src/fixtures/BaseTest.ts, src/fixtures/index.ts,
+    src/utils/urlBuilder.ts, src/utils/waitHelpers.ts,
+    tests/e2e/login.spec.ts, tests/e2e/navigation.spec.ts
+
+  Reuse the existing auth strategy (storageState: '.auth/session.json'),
+  project names ('authenticated' / 'unauthenticated'), fixture pattern
+  (test.extend), data factory pattern, and BasePage inheritance.
+  Output only the files listed below.
+
+  ---
+  NEW FILES TO GENERATE
+  src/pages/    ItemDetailPage
+  tests/e2e/    itemDetail.spec.ts
+
+  UPDATED FILE
+  src/fixtures/BaseTest.ts  — add itemPage: ItemDetailPage fixture,
+                              keep all existing fixtures unchanged
+
+  ---
+  SITE CONTEXT FOR THIS SCOPE
+  - Route: /inventory-item.html?id=N (requires authentication)
+  - Detail page elements: product name, description, price, image,
+    Add to Cart button (becomes "Remove" after click)
+  - Back to Products button returns to /inventory.html
+  - Cart badge in SiteHeader reflects item count
+
+  ---
+  CLEAN CODE RULES — same as golden file
+  1. All locators in ItemDetailPage only — no raw selectors in tests
+  2. Tests call page object methods only; no expect() inside page objects
+  3. No waitForTimeout()
+  4. No inline strings — import from existing src/data/users.ts if needed
+  5. itemDetail.spec.ts tagged with project: 'authenticated'
+
+  ---
+  3 TEST SCENARIOS — implement all, one test() per scenario
+
+  itemDetail.spec.ts  (project: authenticated)
+    TC-ITEM-01 @smoke
+      Given I navigate to /inventory.html and click the first product name
+      Then URL contains /inventory-item.html
+      And product name, description, price, image, and Add to Cart button
+      are all visible and enabled
+
+    TC-ITEM-02 @regression
+      Given I am on an item detail page
+      When I click Add to Cart
+      Then the cart badge in SiteHeader shows 1
+      And the button text changes to "Remove"
+
+    TC-ITEM-03 @regression
+      Given I am on an item detail page
+      When I click Back to Products
+      Then URL is /inventory.html
+
+  ---
+  KEY LOCATORS — ItemDetailPage
+    product name    → [data-test="inventory-item-name"]
+    product desc    → [data-test="inventory-item-desc"]
+    product price   → [data-test="inventory-item-price"]
+    product image   → img.inventory_item_img
+    add to cart btn → [data-test^="add-to-cart"]
+    back button     → [data-test="back-to-products"]
+
+  ---
+  OUTPUT: only the 3 files listed under NEW FILES and UPDATED FILE.
+  No placeholders, no TODOs, no inline comments explaining what the code does.
+  Each file must compile and run against the live site without modification.
