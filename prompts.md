@@ -360,3 +360,50 @@ compile and run against the live site without modification.
   No placeholders, no TODOs, no inline comments explaining what the code does.
   Each file must compile and run against the live site without modification.
 
+  Prompt 4 — Incremental: Winston Logger
+
+    Act as Senior SDET. Extend an existing test framework
+    with logger.
+
+    Reuse the existing fixture pattern (test.extend) and keep all existing
+    fixtures in BaseTest.ts unchanged.
+    Output only the files listed below.
+
+    ---
+    IMPLEMENTATION CONTEXT
+    - Logger is a class instantiated per test via the fixture — never a singleton
+    - Constructor receives Page and TestInfo from Playwright
+    - setup() subscribes to page.on('console') and page.on('pageerror')
+    - All captured events and manual log() calls are buffered in memory
+    - teardown() writes the buffer to testInfo.outputDir + '/logs.txt',
+      then calls testInfo.attach('logs', { path, contentType: 'text/plain' })
+      so logs appear inline in the HTML report for every test
+    - testInfo.outputDir is unique per test worker — no file collisions under
+      fullyParallel: true
+    - Console transport is enabled only when process.env.CI is falsy
+    - Log format (File and Console): [timestamp] [LEVEL] message
+      timestamp: ISO 8601, LEVEL: uppercase, width-padded to 5 chars
+    - page.on('console') captures all levels; page.on('pageerror') always
+      logged at ERROR level
+    - No log files are written to any directory other than testInfo.outputDir
+
+    ---
+    CLEAN CODE RULES 
+    1. Logger class exposes: setup(), teardown(), and
+       info(), warn(), error(), debug() — each takes a string message
+    2. No expect() or Playwright assertions inside Logger
+    3. No waitForTimeout()
+    4. No inline comments explaining what the code does
+    5. winston transports configured inside Logger constructor only —
+       no module-level winston instances
+    6. teardown() must close the winston logger before resolving
+       (call logger.end() and await the 'finish' event on the File transport
+       stream to ensure the file is fully flushed before attach)
+    7. Logger fixture in BaseTest.ts calls setup() before use and
+       teardown() after use via try/finally
+
+    ---
+    OUTPUT: only the files required.
+    No placeholders, no TODOs, no inline comments explaining what the code does.
+    Each file must compile and run without modification.
+

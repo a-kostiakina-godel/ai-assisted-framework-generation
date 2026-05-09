@@ -1,5 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
+import type { Logger } from '../utils/Logger';
 
 export class ItemDetailPage extends BasePage {
   private readonly productName: Locator;
@@ -11,8 +12,8 @@ export class ItemDetailPage extends BasePage {
   private readonly backButton: Locator;
   private readonly firstInventoryItemLink: Locator;
 
-  constructor(page: Page) {
-    super(page);
+  constructor(page: Page, logger?: Logger) {
+    super(page, logger);
     this.productName = page.locator('[data-test="inventory-item-name"]');
     this.productDesc = page.locator('[data-test="inventory-item-desc"]');
     this.productPrice = page.locator('[data-test="inventory-item-price"]');
@@ -29,15 +30,18 @@ export class ItemDetailPage extends BasePage {
 
   async openFirstItemFromInventory(): Promise<void> {
     await this.navigate('/inventory.html');
+    this.logger?.info('Clicking first inventory item');
     await this.firstInventoryItemLink.click();
     await this.page.waitForLoadState('domcontentloaded');
   }
 
   async clickAddToCart(): Promise<void> {
+    this.logger?.info('Clicking Add to Cart');
     await this.addToCartButton.click();
   }
 
   async clickBackToProducts(): Promise<void> {
+    this.logger?.info('Clicking Back to Products');
     await this.backButton.click();
     await this.page.waitForLoadState('domcontentloaded');
   }

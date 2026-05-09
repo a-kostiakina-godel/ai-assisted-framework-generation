@@ -1,14 +1,15 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 import { InventoryItem } from '../components/InventoryItem';
+import type { Logger } from '../utils/Logger';
 
 export class InventoryPage extends BasePage {
   private readonly titleLocator: Locator;
   private readonly sortDropdown: Locator;
   private readonly productCards: Locator;
 
-  constructor(page: Page) {
-    super(page);
+  constructor(page: Page, logger?: Logger) {
+    super(page, logger);
     this.titleLocator = page.locator('.title');
     this.sortDropdown = page.locator('[data-test="product-sort-container"]');
     this.productCards = page.locator('.inventory_item');
@@ -19,6 +20,7 @@ export class InventoryPage extends BasePage {
   }
 
   async selectSortOption(value: string): Promise<void> {
+    this.logger?.info(`Selecting sort option: ${value}`);
     await this.sortDropdown.selectOption(value);
   }
 
