@@ -266,3 +266,97 @@ compile and run against the live site without modification.
   OUTPUT: only the 3 files listed under NEW FILES and UPDATED FILE.
   No placeholders, no TODOs, no inline comments explaining what the code does.
   Each file must compile and run against the live site without modification.
+
+  Prompt 3 — Incremental: Inventory Tests
+
+  Act as Senior SDET. Extend an existing TypeScript + Playwright framework
+  for https://www.saucedemo.com/.
+
+  ---
+  GOLDEN FILE CONSTRAINT for page object to look for: src/pages/LoginPage.ts
+  The following files already exist and must NOT be regenerated or modified
+  unless a BaseTest.ts fixture update is required:
+    playwright.config.ts, globalSetup.ts, tsconfig.json, package.json,
+    .env.example, README.md,
+    src/pages/BasePage.ts, src/pages/LoginPage.ts, src/pages/ItemDetailPage.ts,
+    src/components/SiteHeader.ts,
+    src/data/users.ts,
+    src/fixtures/BaseTest.ts, src/fixtures/index.ts,
+    src/utils/urlBuilder.ts, src/utils/waitHelpers.ts,
+    tests/e2e/login.spec.ts, tests/e2e/navigation.spec.ts,
+    tests/e2e/itemDetail.spec.ts
+
+  Reuse the existing auth strategy (storageState: '.auth/session.json'),
+  project names ('authenticated' / 'unauthenticated'), fixture pattern
+  (test.extend), data factory pattern, and BasePage inheritance.
+  Output only the files listed below.
+
+  ---
+  NEW FILES TO GENERATE
+  src/pages/      InventoryPage
+  src/components/ InventoryItem
+  src/data/       inventory.ts
+  tests/e2e/      inventory.spec.ts
+
+  UPDATED FILE
+  src/fixtures/BaseTest.ts  — add inventoryPage: InventoryPage fixture,
+                              keep all existing fixtures unchanged
+
+  ---
+  SITE CONTEXT FOR THIS SCOPE
+  - Route: /inventory.html (requires authentication)
+  - 6 products displayed in a grid; each is an .inventory_item element
+  - Each card has: name, price (format $X.XX), image, Add to Cart button
+  - Sort dropdown filters the grid by name or price
+  - Cart badge in SiteHeader reflects item count
+  - InventoryItem component is scoped to a single .inventory_item root locator;
+    it is reused by both InventoryPage (grid) and any future cart-adjacent views
+
+  ---
+  CLEAN CODE RULES — same as golden file
+  1. All locators in InventoryPage and InventoryItem only — no raw selectors in tests
+  2. InventoryItem takes a root Locator in its constructor (not Page)
+  3. isImageLoaded() evaluated via locator.evaluate() inside InventoryItem
+  4. Tests call page object methods only; no expect() inside page objects
+  5. No waitForTimeout()
+  6. inventory.ts exports typed constants and a firstProduct() factory used in TC-INV-03
+  7. inventory.spec.ts tagged with project: 'authenticated'
+
+  ---
+  3 TEST SCENARIOS — implement all, one test() per scenario
+
+  inventory.spec.ts  (project: authenticated)
+    TC-INV-01 @smoke
+      Given I navigate to /inventory.html
+      Then exactly 6 product cards are visible
+      And each card has non-empty name, price matching /^\$\d+\.\d{2}$/,
+          loaded image (naturalWidth > 0), and enabled Add to Cart button
+
+    TC-INV-02 @regression
+      Given I navigate to /inventory.html
+      When I select "Price (low to high)" from the sort dropdown
+      Then the first product price is ≤ the last product price
+
+    TC-INV-03 @smoke
+      Given I navigate to /inventory.html
+      When I click Add to Cart on the first product card
+      Then the cart badge in SiteHeader shows 1
+
+  ---
+  KEY LOCATORS
+  InventoryPage:
+    page title      → .title
+    sort dropdown   → [data-test="product-sort-container"]
+    product cards   → .inventory_item  (returns Locator for all cards)
+
+  InventoryItem (component — root is one .inventory_item Locator):
+    product name    → .inventory_item_name
+    product price   → .inventory_item_price
+    product image   → img.inventory_item_img
+    add to cart btn → button[data-test^="add-to-cart"]
+
+  ---
+  OUTPUT: only the 5 files listed under NEW FILES and UPDATED FILE.
+  No placeholders, no TODOs, no inline comments explaining what the code does.
+  Each file must compile and run against the live site without modification.
+
