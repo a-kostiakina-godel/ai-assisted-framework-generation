@@ -1,5 +1,6 @@
 import { test, expect } from '../../src/fixtures';
 import { validUser, lockedUser } from '../../src/data/users';
+import { INVENTORY_URL } from '../../src/utils/urlBuilder';
 
 test.describe('Login', () => {
   test.beforeEach(async ({ loginPage }) => {
@@ -10,7 +11,7 @@ test.describe('Login', () => {
     'TC-LOGIN-01: valid credentials navigate to inventory page @smoke',
     async ({ loginPage, siteHeader, page }) => {
       await loginPage.login(validUser());
-      await expect(page).toHaveURL('/inventory.html');
+      await expect(page).toHaveURL(INVENTORY_URL);
       await expect(siteHeader.getHamburgerButton()).toBeVisible();
     },
   );

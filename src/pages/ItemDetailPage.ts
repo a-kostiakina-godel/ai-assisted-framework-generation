@@ -1,6 +1,7 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 import type { Logger } from '../utils/Logger';
+import { INVENTORY_URL, ITEM_DETAIL_URL } from '../utils/urlBuilder';
 
 export class ItemDetailPage extends BasePage {
   private readonly productName: Locator;
@@ -25,11 +26,11 @@ export class ItemDetailPage extends BasePage {
   }
 
   async open(id: number): Promise<void> {
-    await this.navigate(`/inventory-item.html?id=${id}`);
+    await this.navigate(`${ITEM_DETAIL_URL}?id=${id}`);
   }
 
   async openFirstItemFromInventory(): Promise<void> {
-    await this.navigate('/inventory.html');
+    await this.navigate(INVENTORY_URL);
     this.logger?.info('Clicking first inventory item');
     await this.firstInventoryItemLink.click();
     await this.page.waitForLoadState('domcontentloaded');
@@ -46,31 +47,11 @@ export class ItemDetailPage extends BasePage {
     await this.page.waitForLoadState('domcontentloaded');
   }
 
-  getProductName(): Locator {
-    return this.productName;
-  }
-
-  getProductDesc(): Locator {
-    return this.productDesc;
-  }
-
-  getProductPrice(): Locator {
-    return this.productPrice;
-  }
-
-  getProductImage(): Locator {
-    return this.productImage;
-  }
-
-  getAddToCartButton(): Locator {
-    return this.addToCartButton;
-  }
-
-  getRemoveButton(): Locator {
-    return this.removeButton;
-  }
-
-  getBackButton(): Locator {
-    return this.backButton;
-  }
+  getProductName(): Locator { return this.productName; }
+  getProductDesc(): Locator { return this.productDesc; }
+  getProductPrice(): Locator { return this.productPrice; }
+  getProductImage(): Locator { return this.productImage; }
+  getAddToCartButton(): Locator { return this.addToCartButton; }
+  getRemoveButton(): Locator { return this.removeButton; }
+  getBackButton(): Locator { return this.backButton; }
 }

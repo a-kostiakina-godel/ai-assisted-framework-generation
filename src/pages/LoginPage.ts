@@ -2,6 +2,7 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 import { UserCredentials } from '../data/users';
 import type { Logger } from '../utils/Logger';
+import { LOGIN_URL } from '../utils/urlBuilder';
 
 export class LoginPage extends BasePage {
   private readonly usernameField: Locator;
@@ -18,7 +19,7 @@ export class LoginPage extends BasePage {
   }
 
   async open(): Promise<void> {
-    await this.navigate('/');
+    await this.navigate(LOGIN_URL);
   }
 
   async login(credentials: UserCredentials): Promise<void> {

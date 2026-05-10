@@ -2,6 +2,7 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 import { InventoryItem } from '../components/InventoryItem';
 import type { Logger } from '../utils/Logger';
+import { INVENTORY_URL } from '../utils/urlBuilder';
 
 export class InventoryPage extends BasePage {
   private readonly titleLocator: Locator;
@@ -16,7 +17,7 @@ export class InventoryPage extends BasePage {
   }
 
   async open(): Promise<void> {
-    await this.navigate('/inventory.html');
+    await this.navigate(INVENTORY_URL);
   }
 
   async selectSortOption(value: string): Promise<void> {

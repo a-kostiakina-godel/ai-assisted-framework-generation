@@ -1,9 +1,9 @@
 import { test, expect } from '../../src/fixtures';
-import { buildInventoryUrl } from '../../src/utils/urlBuilder';
+import { LOGIN_URL, INVENTORY_URL } from '../../src/utils/urlBuilder';
 
 test.describe('Navigation', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(buildInventoryUrl());
+    await page.goto(INVENTORY_URL);
   });
 
   test(
@@ -11,7 +11,7 @@ test.describe('Navigation', () => {
     async ({ siteHeader, loginPage, page }) => {
       await siteHeader.openHamburgerMenu();
       await siteHeader.clickLogout();
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL(LOGIN_URL);
       await expect(loginPage.getLoginButton()).toBeVisible();
     },
   );

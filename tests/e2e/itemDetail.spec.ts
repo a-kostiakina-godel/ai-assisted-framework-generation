@@ -1,4 +1,5 @@
 import { test, expect } from '../../src/fixtures';
+import { INVENTORY_URL } from '../../src/utils/urlBuilder';
 
 test.describe('Item Detail', () => {
   test(
@@ -33,7 +34,7 @@ test.describe('Item Detail', () => {
       'TC-ITEM-03: Back to Products navigates to inventory page @regression',
       async ({ itemPage, page }) => {
         await itemPage.clickBackToProducts();
-        await expect(page).toHaveURL('/inventory.html');
+        await expect(page).toHaveURL(INVENTORY_URL);
       },
     );
   });
