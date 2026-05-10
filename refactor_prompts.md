@@ -57,3 +57,34 @@ Task:
 
  Output updated files only with headers in the format:
 // path: <relative_path>
+
+Prompt 3:
+
+Refactor hardcoded assertion values.
+
+You are a Senior QA Automation Engineer.
+
+Goal:
+Update e2e tests and move all values to assert in the test data files:
+
+Context:
+
+- Stack: TypeScript + Playwright
+- Pattern: Page Object Model
+- e2e test files:
+  login.spec.ts
+  itemDetail.spec.ts
+  navigation.spec.ts
+  globalSetup.ts
+
+Task:
+
+1. Covert urlBuilder.ts to named constants
+2. Update e2e tests to move verified assertion values to src/data folder:
+   login.spec.ts
+   itemDetail.spec.ts
+   navigation.spec.ts
+   globalSetup.ts
+
+ Output updated files only with headers in the format:
+// path: <relative_path>

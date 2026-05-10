@@ -16,3 +16,8 @@ export function lockedUser(): UserCredentials {
     password: 'secret_sauce',
   };
 }
+
+export const LoginErrors = {
+  lockedUser: 'locked out',
+  emptyUsername: 'Username is required',
+};

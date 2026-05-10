@@ -12,3 +12,10 @@ export type ProductRef = { index: number };
 export function firstProduct(): ProductRef {
   return { index: 0 };
 }
+
+export const ITEM_DETAIL_ID = 4;
+
+export const CartExpectations = {
+  badgeAfterAdd: '1',
+  removeButtonText: 'Remove',
+};

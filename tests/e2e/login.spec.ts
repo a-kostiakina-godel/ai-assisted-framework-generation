@@ -1,5 +1,5 @@
 import { test, expect } from '../../src/fixtures';
-import { validUser, lockedUser } from '../../src/data/users';
+import { validUser, lockedUser, LoginErrors } from '../../src/data/users';
 import { INVENTORY_URL } from '../../src/utils/urlBuilder';
 
 test.describe('Login', () => {
@@ -21,7 +21,7 @@ test.describe('Login', () => {
     async ({ loginPage }) => {
       await loginPage.login(lockedUser());
       await expect(loginPage.getErrorBanner()).toBeVisible();
-      await expect(loginPage.getErrorBanner()).toContainText('locked out');
+      await expect(loginPage.getErrorBanner()).toContainText(LoginErrors.lockedUser);
     },
   );
 
@@ -30,7 +30,7 @@ test.describe('Login', () => {
     async ({ loginPage }) => {
       await loginPage.submitEmptyForm();
       await expect(loginPage.getErrorBanner()).toBeVisible();
-      await expect(loginPage.getErrorBanner()).toContainText('Username is required');
+      await expect(loginPage.getErrorBanner()).toContainText(LoginErrors.emptyUsername);
     },
   );
 });
