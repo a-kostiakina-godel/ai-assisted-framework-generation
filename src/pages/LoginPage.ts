@@ -3,6 +3,7 @@ import { BasePage } from './BasePage';
 import { UserCredentials } from '../data/users';
 import type { Logger } from '../utils/Logger';
 import { LOGIN_URL } from '../utils/urlBuilder';
+import { waitForPageLoad } from '../utils/waitHelpers';
 
 export class LoginPage extends BasePage {
   private readonly usernameField: Locator;
@@ -27,7 +28,7 @@ export class LoginPage extends BasePage {
     await this.usernameField.fill(credentials.username);
     await this.passwordField.fill(credentials.password);
     await this.loginButton.click();
-    await this.page.waitForLoadState('domcontentloaded');
+    await waitForPageLoad(this.page);
   }
 
   async submitEmptyForm(): Promise<void> {

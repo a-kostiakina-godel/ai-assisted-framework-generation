@@ -1,4 +1,5 @@
 import { Page, Locator } from '@playwright/test';
+import { waitForPageLoad } from '../utils/waitHelpers';
 
 export class SiteHeader {
   private readonly cartLink: Locator;
@@ -7,8 +8,8 @@ export class SiteHeader {
   private readonly logoutLink: Locator;
 
   constructor(private readonly page: Page) {
-    this.cartLink = page.locator('.shopping_cart_link');
-    this.cartBadge = page.locator('.shopping_cart_badge');
+    this.cartLink = page.locator('[data-test="shopping-cart-link"]');
+    this.cartBadge = page.locator('[data-test="shopping-cart-badge"]');
     this.hamburgerButton = page.locator('#react-burger-menu-btn');
     this.logoutLink = page.locator('#logout_sidebar_link');
   }
@@ -21,16 +22,9 @@ export class SiteHeader {
     return this.cartBadge;
   }
 
-  async getCartItemCount(): Promise<number> {
-    const isVisible = await this.cartBadge.isVisible();
-    if (!isVisible) return 0;
-    const text = await this.cartBadge.textContent();
-    return parseInt(text?.trim() ?? '0', 10);
-  }
-
   async clickCartLink(): Promise<void> {
     await this.cartLink.click();
-    await this.page.waitForLoadState('domcontentloaded');
+    await waitForPageLoad(this.page);
   }
 
   async openHamburgerMenu(): Promise<void> {
@@ -40,6 +34,6 @@ export class SiteHeader {
 
   async clickLogout(): Promise<void> {
     await this.logoutLink.click();
-    await this.page.waitForLoadState('domcontentloaded');
+    await waitForPageLoad(this.page);
   }
 }

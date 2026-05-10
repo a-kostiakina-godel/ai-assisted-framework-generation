@@ -2,6 +2,7 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 import type { Logger } from '../utils/Logger';
 import { INVENTORY_URL, ITEM_DETAIL_URL } from '../utils/urlBuilder';
+import { waitForPageLoad } from '../utils/waitHelpers';
 
 export class ItemDetailPage extends BasePage {
   private readonly productName: Locator;
@@ -33,7 +34,7 @@ export class ItemDetailPage extends BasePage {
     await this.navigate(INVENTORY_URL);
     this.logger?.info('Clicking first inventory item');
     await this.firstInventoryItemLink.click();
-    await this.page.waitForLoadState('domcontentloaded');
+    await waitForPageLoad(this.page);
   }
 
   async clickAddToCart(): Promise<void> {
@@ -44,7 +45,7 @@ export class ItemDetailPage extends BasePage {
   async clickBackToProducts(): Promise<void> {
     this.logger?.info('Clicking Back to Products');
     await this.backButton.click();
-    await this.page.waitForLoadState('domcontentloaded');
+    await waitForPageLoad(this.page);
   }
 
   getProductName(): Locator {
