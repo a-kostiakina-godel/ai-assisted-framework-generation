@@ -14,6 +14,7 @@ test.describe('Item Detail', () => {
       await expect(itemPage.getProductImage()).toBeVisible();
       await expect(itemPage.getAddToCartButton()).toBeVisible();
       await expect(itemPage.getAddToCartButton()).toBeEnabled();
+      await expect(itemPage.getBackButton()).toBeVisible();
     },
   );
 

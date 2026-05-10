@@ -11,7 +11,4 @@ export abstract class BasePage {
     await waitForPageLoad(this.page);
   }
 
-  async getPageTitle(): Promise<string> {
-    return this.page.title();
-  }
 }

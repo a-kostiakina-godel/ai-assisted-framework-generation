@@ -13,6 +13,10 @@ export function firstProduct(): ProductRef {
   return { index: 0 };
 }
 
+export const InventoryPageData = {
+  title: 'Products',
+};
+
 export const ITEM_DETAIL_ID = 4;
 
 export const CartExpectations = {

@@ -1,5 +1,5 @@
 import { test, expect } from '../../src/fixtures';
-import { SortOptions, firstProduct } from '../../src/data/inventory';
+import { SortOptions, firstProduct, CartExpectations, InventoryPageData } from '../../src/data/inventory';
 
 test.describe('Inventory', () => {
   test.beforeEach(async ({ inventoryPage }) => {
@@ -9,6 +9,7 @@ test.describe('Inventory', () => {
   test(
     'TC-INV-01: inventory page shows 6 product cards with complete data @smoke',
     async ({ inventoryPage }) => {
+      await expect(inventoryPage.getTitle()).toHaveText(InventoryPageData.title);
       await expect(inventoryPage.getProductCards()).toHaveCount(6);
       const items = await inventoryPage.getItems();
       for (const item of items) {
@@ -36,7 +37,7 @@ test.describe('Inventory', () => {
     async ({ inventoryPage, siteHeader }) => {
       const { index } = firstProduct();
       await inventoryPage.getItem(index).clickAddToCart();
-      await expect(siteHeader.getCartBadge()).toHaveText('1');
+      await expect(siteHeader.getCartBadge()).toHaveText(CartExpectations.badgeAfterAdd);
     },
   );
 });

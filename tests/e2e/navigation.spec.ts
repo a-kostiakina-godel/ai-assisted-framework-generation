@@ -1,5 +1,5 @@
 import { test, expect } from '../../src/fixtures';
-import { LOGIN_URL, INVENTORY_URL } from '../../src/utils/urlBuilder';
+import { LOGIN_URL, INVENTORY_URL, CART_URL } from '../../src/utils/urlBuilder';
 
 test.describe('Navigation', () => {
   test.beforeEach(async ({ page }) => {
@@ -13,6 +13,14 @@ test.describe('Navigation', () => {
       await siteHeader.clickLogout();
       await expect(page).toHaveURL(LOGIN_URL);
       await expect(loginPage.getLoginButton()).toBeVisible();
+    },
+  );
+
+  test(
+    'TC-NAV-02: cart link navigates to cart page @smoke',
+    async ({ siteHeader, page }) => {
+      await siteHeader.clickCartLink();
+      await expect(page).toHaveURL(CART_URL);
     },
   );
 });

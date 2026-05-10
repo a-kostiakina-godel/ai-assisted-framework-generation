@@ -136,3 +136,256 @@ Self-Review Report
 
   SiteHeader.ts — PASS with one note
 
+You are a Senior QA Automation Engineer.
+
+Goal:
+Verify that the following refactor didn’t break or reduce test coverage.
+
+Inputs:
+- Refactored Page/Object:
+   globalSetup.ts
+   src/utils/urlBuilder.ts
+   src/utils/waitHelpers.ts
+   src/pages/BasePage.ts
+   src/pages/LoginPage.ts
+   src/pages/InventoryPage.ts
+   src/pages/ItemDetailPage.ts
+   src/components/SiteHeader.ts
+   src/fixtures/BaseTest.ts
+   src/data/users.ts
+   src/data/inventory.ts
+   eslint.config.mjs (new)
+   package.json
+- Related tests:
+   tests/e2e/login.spec.ts
+   tests/e2e/itemDetail.spec.ts
+   tests/e2e/navigation.spec.ts
+
+Tasks:
+1) Check that all old methods still have corresponding tests.
+2) Identify missing test coverage or renamed methods not updated.
+3) Suggest where to update or add missing tests.
+Output a "Test Coverage Report" with list of affected files and recommended updates.
+
+  Test Coverage Report 
+
+  Methodology
+
+  Each public method and exported symbol in the refactored files was mapped against its actual usage across all four test files.
+
+  ---
+  src/pages/LoginPage.ts — PASS
+
+  ┌───────────────────┬──────────────────────────┬────────┐
+  │      Method       │        Tested in         │ Status │
+  ├───────────────────┼──────────────────────────┼────────┤
+  │ open()            │ login.spec.ts beforeEach │ ✓      │
+  ├───────────────────┼──────────────────────────┼────────┤
+  │ login()           │ TC-LOGIN-01, TC-LOGIN-02 │ ✓      │
+  ├───────────────────┼──────────────────────────┼────────┤
+  │ submitEmptyForm() │ TC-LOGIN-03              │ ✓      │
+  ├───────────────────┼──────────────────────────┼────────┤
+  │ getLoginButton()  │ TC-NAV-01                │ ✓      │
+  ├───────────────────┼──────────────────────────┼────────┤
+  │ getErrorBanner()  │ TC-LOGIN-02, TC-LOGIN-03 │ ✓      │
+  └───────────────────┴──────────────────────────┴────────┘
+
+  ---
+  src/pages/InventoryPage.ts — PARTIAL
+
+  ┌────────────────────┬──────────────────────────────┬────────────┐
+  │       Method       │          Tested in           │   Status   │
+  ├────────────────────┼──────────────────────────────┼────────────┤
+  │ open()             │ inventory.spec.ts beforeEach │ ✓          │
+  ├────────────────────┼──────────────────────────────┼────────────┤
+  │ selectSortOption() │ TC-INV-02                    │ ✓          │
+  ├────────────────────┼──────────────────────────────┼────────────┤
+  │ getProductCards()  │ TC-INV-01                    │ ✓          │
+  ├────────────────────┼──────────────────────────────┼────────────┤
+  │ getItem()          │ TC-INV-03                    │ ✓          │
+  ├────────────────────┼──────────────────────────────┼────────────┤
+  │ getItems()         │ TC-INV-01, TC-INV-02         │ ✓          │
+  ├────────────────────┼──────────────────────────────┼────────────┤
+  │ getTitle()         │ —                            │ ✗ UNTESTED │
+  └────────────────────┴──────────────────────────────┴────────────┘
+
+  Recommendation: Add assertion await expect(inventoryPage.getTitle()).toHaveText('Products') to TC-INV-01.
+
+  ---
+  src/pages/ItemDetailPage.ts — PARTIAL
+
+  ┌──────────────────────────────┬───────────────────────────────┬────────────┐
+  │            Method            │           Tested in           │   Status   │
+  ├──────────────────────────────┼───────────────────────────────┼────────────┤
+  │ open()                       │ itemDetail.spec.ts beforeEach │ ✓          │
+  ├──────────────────────────────┼───────────────────────────────┼────────────┤
+  │ openFirstItemFromInventory() │ TC-ITEM-01                    │ ✓          │
+  ├──────────────────────────────┼───────────────────────────────┼────────────┤
+  │ clickAddToCart()             │ TC-ITEM-02                    │ ✓          │
+  ├──────────────────────────────┼───────────────────────────────┼────────────┤
+  │ clickBackToProducts()        │ TC-ITEM-03                    │ ✓          │
+  ├──────────────────────────────┼───────────────────────────────┼────────────┤
+  │ getProductName()             │ TC-ITEM-01                    │ ✓          │
+  ├──────────────────────────────┼───────────────────────────────┼────────────┤
+  │ getProductDesc()             │ TC-ITEM-01                    │ ✓          │
+  ├──────────────────────────────┼───────────────────────────────┼────────────┤
+  │ getProductPrice()            │ TC-ITEM-01                    │ ✓          │
+  ├──────────────────────────────┼───────────────────────────────┼────────────┤
+  │ getProductImage()            │ TC-ITEM-01                    │ ✓          │
+  ├──────────────────────────────┼───────────────────────────────┼────────────┤
+  │ getAddToCartButton()         │ TC-ITEM-01                    │ ✓          │
+  ├──────────────────────────────┼───────────────────────────────┼────────────┤
+  │ getRemoveButton()            │ TC-ITEM-02                    │ ✓          │
+  ├──────────────────────────────┼───────────────────────────────┼────────────┤
+  │ getBackButton()              │ —                             │ ✗ UNTESTED │
+  └──────────────────────────────┴───────────────────────────────┴────────────┘
+
+  Recommendation: Either add await expect(itemPage.getBackButton()).toBeVisible() to TC-ITEM-01, or remove the getter if no test needs to
+  assert on it directly (the button behaviour is already covered via clickBackToProducts() in TC-ITEM-03).
+
+  ---
+  src/components/SiteHeader.ts — PARTIAL
+
+  ┌──────────────────────┬───────────────────────┬────────────┐
+  │        Method        │       Tested in       │   Status   │
+  ├──────────────────────┼───────────────────────┼────────────┤
+  │ getHamburgerButton() │ TC-LOGIN-01           │ ✓          │
+  ├──────────────────────┼───────────────────────┼────────────┤
+  │ getCartBadge()       │ TC-INV-03, TC-ITEM-02 │ ✓          │
+  ├──────────────────────┼───────────────────────┼────────────┤
+  │ openHamburgerMenu()  │ TC-NAV-01             │ ✓          │
+  ├──────────────────────┼───────────────────────┼────────────┤
+  │ clickLogout()        │ TC-NAV-01             │ ✓          │
+  ├──────────────────────┼───────────────────────┼────────────┤
+  │ clickCartLink()      │ —                     │ ✗ UNTESTED │
+  └──────────────────────┴───────────────────────┴────────────┘
+
+  Recommendation: Add a test to navigation.spec.ts that clicks the cart link and asserts the cart page URL, e.g.:
+  test('TC-NAV-02: cart link navigates to cart page @smoke', ...)
+
+  ---
+  src/pages/BasePage.ts — PARTIAL
+
+  ┌────────────────┬──────────────────────────────────┬──────────────┐
+  │     Method     │          Exercised via           │    Status    │
+  ├────────────────┼──────────────────────────────────┼──────────────┤
+  │ navigate()     │ All open() calls in page objects │ ✓ (indirect) │
+  ├────────────────┼──────────────────────────────────┼──────────────┤
+  │ getPageTitle() │ —                                │ ✗ UNTESTED   │
+  └────────────────┴──────────────────────────────────┴──────────────┘
+
+  Recommendation: getPageTitle() is never called in any test or page object. Either add a title assertion to an existing test (e.g.
+  TC-LOGIN-01), or remove the method if it serves no active purpose.
+
+  ---
+  src/data/users.ts — PASS
+
+  ┌───────────────────────────┬─────────────┬────────┐
+  │          Export           │   Used in   │ Status │
+  ├───────────────────────────┼─────────────┼────────┤
+  │ validUser()               │ TC-LOGIN-01 │ ✓      │
+  ├───────────────────────────┼─────────────┼────────┤
+  │ lockedUser()              │ TC-LOGIN-02 │ ✓      │
+  ├───────────────────────────┼─────────────┼────────┤
+  │ LoginErrors.lockedUser    │ TC-LOGIN-02 │ ✓      │
+  ├───────────────────────────┼─────────────┼────────┤
+  │ LoginErrors.emptyUsername │ TC-LOGIN-03 │ ✓      │
+  └───────────────────────────┴─────────────┴────────┘
+
+  ---
+  src/data/inventory.ts — PARTIAL
+
+  ┌───────────────────────────────────┬───────────────────────────────┬────────────┐
+  │              Export               │            Used in            │   Status   │
+  ├───────────────────────────────────┼───────────────────────────────┼────────────┤
+  │ SortOptions.priceLowHigh          │ TC-INV-02                     │ ✓          │
+  ├───────────────────────────────────┼───────────────────────────────┼────────────┤
+  │ SortOptions.nameAZ                │ —                             │ ✗ UNTESTED │
+  ├───────────────────────────────────┼───────────────────────────────┼────────────┤
+  │ SortOptions.nameZA                │ —                             │ ✗ UNTESTED │
+  ├───────────────────────────────────┼───────────────────────────────┼────────────┤
+  │ SortOptions.priceHighLow          │ —                             │ ✗ UNTESTED │
+  ├───────────────────────────────────┼───────────────────────────────┼────────────┤
+  │ firstProduct()                    │ TC-INV-03                     │ ✓          │
+  ├───────────────────────────────────┼───────────────────────────────┼────────────┤
+  │ ITEM_DETAIL_ID                    │ itemDetail.spec.ts beforeEach │ ✓          │
+  ├───────────────────────────────────┼───────────────────────────────┼────────────┤
+  │ CartExpectations.badgeAfterAdd    │ TC-ITEM-02                    │ ✓          │
+  ├───────────────────────────────────┼───────────────────────────────┼────────────┤
+  │ CartExpectations.removeButtonText │ TC-ITEM-02                    │ ✓          │
+  └───────────────────────────────────┴───────────────────────────────┴────────────┘
+
+  Recommendation: Add sort tests for nameAZ, nameZA, and priceHighLow to inventory.spec.ts, following the existing pattern of TC-INV-02.
+
+  ---
+  Consistency Issue — inventory.spec.ts TC-INV-03
+
+  CartExpectations.badgeAfterAdd was introduced to centralise the cart badge value, and itemDetail.spec.ts already uses it. However
+  inventory.spec.ts:39 still uses the hardcoded string '1':
+
+  // inventory.spec.ts:39 — inconsistent with itemDetail.spec.ts
+  await expect(siteHeader.getCartBadge()).toHaveText('1');
+
+  Recommendation: Import and use CartExpectations.badgeAfterAdd in inventory.spec.ts to match the convention established in
+  itemDetail.spec.ts.
+
+  ---
+  Summary
+
+  ┌───────────────────┬──────────────────────────┬───────────────────────────────────────────────────────────────────┐
+  │       File        │          Status          │                          Action required                          │
+  ├───────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ LoginPage.ts      │ Full coverage            │ None                                                              │
+  ├───────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ InventoryPage.ts  │ Partial                  │ Test getTitle()                                                   │
+  ├───────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ ItemDetailPage.ts │ Partial                  │ Test or remove getBackButton()                                    │
+  ├───────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ SiteHeader.ts     │ Partial                  │ Test clickCartLink()                                              │
+  ├───────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ BasePage.ts       │ Partial                  │ Test or remove getPageTitle()                                     │
+  ├───────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ users.ts          │ Full coverage            │ None                                                              │
+  ├───────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ inventory.ts      │ Partial                  │ Test 3 unused SortOptions; fix hardcoded '1' in inventory.spec.ts │
+  ├───────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ CartExpectations.removeButtonText │ TC-ITEM-02                    │ ✓          │
+  └───────────────────────────────────┴───────────────────────────────┴────────────┘
+
+  Recommendation: Add sort tests for nameAZ, nameZA, and priceHighLow to inventory.spec.ts, following the existing pattern of TC-INV-02.
+
+  ---
+  Consistency Issue — inventory.spec.ts TC-INV-03
+
+  CartExpectations.badgeAfterAdd was introduced to centralise the cart badge value, and itemDetail.spec.ts already uses it. However
+  inventory.spec.ts:39 still uses the hardcoded string '1':
+
+  // inventory.spec.ts:39 — inconsistent with itemDetail.spec.ts
+  await expect(siteHeader.getCartBadge()).toHaveText('1');
+
+  Recommendation: Import and use CartExpectations.badgeAfterAdd in inventory.spec.ts to match the convention established in
+  itemDetail.spec.ts.
+
+  ---
+  Summary
+
+  ┌───────────────────┬──────────────────────────┬───────────────────────────────────────────────────────────────────┐
+  │       File        │          Status          │                          Action required                          │
+  ├───────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ LoginPage.ts      │ Full coverage            │ None                                                              │
+  ├───────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ InventoryPage.ts  │ Partial                  │ Test getTitle()                                                   │
+  ├───────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ ItemDetailPage.ts │ Partial                  │ Test or remove getBackButton()                                    │
+  ├───────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ SiteHeader.ts     │ Partial                  │ Test clickCartLink()                                              │
+  ├───────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ BasePage.ts       │ Partial                  │ Test or remove getPageTitle()                                     │
+  ├───────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ users.ts          │ Full coverage            │ None                                                              │
+  ├───────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ inventory.ts      │ Partial                  │ Test 3 unused SortOptions; fix hardcoded '1' in inventory.spec.ts │
+  ├───────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ urlBuilder.ts     │ Full coverage            │ None                                                              │
+  ├───────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ waitHelpers.ts    │ Full coverage (indirect) │ None          
