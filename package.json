@@ -6,7 +6,8 @@
     "test": "playwright test",
     "test:smoke": "playwright test --grep @smoke",
     "test:regression": "playwright test --grep @regression",
-    "report": "playwright show-report"
+    "report": "playwright show-report",
+    "lint": "eslint ."
   },
   "dependencies": {
     "winston": "^3.13.0"
@@ -15,6 +16,9 @@
     "@playwright/test": "^1.45.0",
     "@types/node": "^20.0.0",
     "dotenv": "^16.4.5",
-    "typescript": "^5.5.0"
+    "eslint": "^10.3.0",
+    "eslint-plugin-playwright": "^2.10.2",
+    "typescript": "^5.5.0",
+    "typescript-eslint": "^8.59.2"
   }
 }

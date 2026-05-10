@@ -47,11 +47,31 @@ export class ItemDetailPage extends BasePage {
     await this.page.waitForLoadState('domcontentloaded');
   }
 
-  getProductName(): Locator { return this.productName; }
-  getProductDesc(): Locator { return this.productDesc; }
-  getProductPrice(): Locator { return this.productPrice; }
-  getProductImage(): Locator { return this.productImage; }
-  getAddToCartButton(): Locator { return this.addToCartButton; }
-  getRemoveButton(): Locator { return this.removeButton; }
-  getBackButton(): Locator { return this.backButton; }
+  getProductName(): Locator {
+    return this.productName;
+  }
+
+  getProductDesc(): Locator {
+    return this.productDesc;
+  }
+
+  getProductPrice(): Locator {
+    return this.productPrice;
+  }
+
+  getProductImage(): Locator {
+    return this.productImage;
+  }
+
+  getAddToCartButton(): Locator {
+    return this.addToCartButton;
+  }
+
+  getRemoveButton(): Locator {
+    return this.removeButton;
+  }
+
+  getBackButton(): Locator {
+    return this.backButton;
+  }
 }

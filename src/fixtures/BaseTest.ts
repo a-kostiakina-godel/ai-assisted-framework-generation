@@ -18,7 +18,7 @@ export const test = base.extend<PageFixtures>({
   siteHeader: async ({ page }, use) => use(new SiteHeader(page)),
   itemPage: async ({ page, logger }, use) => use(new ItemDetailPage(page, logger)),
   inventoryPage: async ({ page, logger }, use) => use(new InventoryPage(page, logger)),
-  logger: [async ({ page }, use, testInfo) => {
+  logger: [async ({ page }, use, testInfo): Promise<void> => {
     const logger = new Logger(page, testInfo);
     await logger.setup();
     try {
